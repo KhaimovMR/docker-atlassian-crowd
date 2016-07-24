@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM ubuntu:trusty 
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r atlassian && useradd -r -g atlassian atlassian
@@ -19,13 +19,13 @@ RUN apt-get update && apt-get install -y \
     libtcnative-1 \
   && rm -rf /var/lib/apt/lists/*
 
-ENV CROWD_VERSION 2.6.7
+ENV CROWD_VERSION 2.9.1
 ENV CROWD_HOME /var/atlassian/crowd
 
 # extract crowd
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /opt/atlassian \
-  && curl -o /opt/atlassian/atlassian-crowd.tar.gz -SL 'https://www.atlassian.com/software/crowd/downloads/binary/atlassian-crowd-2.6.7.tar.gz' \
+  && curl -o /opt/atlassian/atlassian-crowd.tar.gz -SL 'https://www.atlassian.com/software/crowd/downloads/binary/atlassian-crowd-2.9.1.tar.gz' \
   && tar xf /opt/atlassian/atlassian-crowd.tar.gz -C /opt/atlassian --strip-components=1 \
   && echo "crowd.home=$CROWD_HOME" > /opt/atlassian/crowd-webapp/WEB-INF/classes/crowd-init.properties \
   && rm -f /opt/atlassian/atlassian-crowd.tar.gz \
@@ -38,5 +38,5 @@ COPY ./docker-entrypoint.sh /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-EXPOSE 8095
+EXPOSE 8080
 CMD ["crowd"]
